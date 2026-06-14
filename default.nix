@@ -13,7 +13,7 @@ final: prev: {
   kdePackages = prev.kdePackages.overrideScope (kfinal: kprev: {
     dolphin = prev.symlinkJoin {
       name = "dolphin-wrapped";
-      paths = [ kprev.dolphin ];
+      paths = [ kprev.dolphin kprev.dolphin.dev ];
       nativeBuildInputs = [ prev.makeWrapper ];
       postBuild = ''
         rm $out/bin/dolphin
@@ -21,6 +21,7 @@ final: prev: {
           --set XDG_CONFIG_DIRS "${prev.libsForQt5.kservice}/etc/xdg:$XDG_CONFIG_DIRS" \
           --run "${kprev.kservice}/bin/kbuildsycoca6 --noincremental ${prev.libsForQt5.kservice}/etc/xdg/menus/applications.menu"
       '';
+      passthru = (kprev.dolphin.passthru or {}) // { dev = kprev.dolphin.dev; };
     };
   });
 }
